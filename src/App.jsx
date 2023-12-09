@@ -2,9 +2,9 @@ import { useState, useRef,useEffect } from 'react'
 import io from 'socket.io-client'
 import { Device } from 'mediasoup-client'
 
-// const socket = io('http://localhost:3000')
+const socket = io('http://54.80.134.202:1300')
 
-const socket = io('https://sfube.onrender.com')
+// const socket = io('https://sfube.onrender.com')
 
 const room = 'room-1'
 let producerTransport = null;
@@ -52,6 +52,11 @@ function App() {
           dtlsParameters,
           sctpParameters
         }) => {
+
+          console.log( iceParameters,
+            iceCandidates,
+            dtlsParameters,
+            sctpParameters)
           producerTransport = device.createSendTransport({
             id,
             iceParameters,
@@ -378,6 +383,7 @@ function App() {
           container.appendChild(video)
         }
 
+        console.log('TRACK',track)
         socket.emit('resume')
       })
     } catch (error) {
