@@ -2,7 +2,7 @@ import { useState, useRef,useEffect } from 'react'
 import io from 'socket.io-client'
 import { Device } from 'mediasoup-client'
 
-const socket = io('http://54.80.134.202:1300')
+const socket = io('https://sfuconnect.website')
 
 // const socket = io('https://sfube.onrender.com')
 
