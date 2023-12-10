@@ -2,9 +2,9 @@ import { useState, useRef,useEffect } from 'react'
 import io from 'socket.io-client'
 import { Device } from 'mediasoup-client'
 
-const socket = io('https://sfuconnect.website')
+// const socket = io('https://sfuconnect.website')
 
-// const socket = io('https://sfube.onrender.com')
+const socket = io('http://localhost:1300')
 
 const room = 'room-1'
 let producerTransport = null;
@@ -109,10 +109,12 @@ function App() {
         video: {
           width: {
             min: 320,
+            ideal:250,
             max: 640,
           },
           height: {
             min: 240,
+            ideal:280,
             max: 450,
           }
         }
@@ -123,6 +125,7 @@ function App() {
 
       const videoLocal = document.querySelector('.local-video')
       videoLocal.srcObject = stream
+      videoLocal.muted = true
 
       producerAudio.current = await producerTransport.produce({
         track: audioTrack,
@@ -410,7 +413,7 @@ function App() {
   return (
     <>
       <div >
-        <video className='local-video' muted autoPlay />
+        <video className='local-video' autoPlay />
       </div>
       <section className='paticipants-video' style={{display:'flex',flexWrap:'wrap'}}>
 
