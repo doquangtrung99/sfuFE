@@ -132,7 +132,17 @@ function App() {
             max: 450,
           }
         } : {
-          facingMode: "user" 
+          facingMode: "user",
+          width: {
+            min: 320,
+            ideal:250,
+            max: 640,
+          },
+          height: {
+            min: 240,
+            ideal:280,
+            max: 450,
+          }
         } 
       })
 
@@ -146,8 +156,8 @@ function App() {
 
       if(!isWeb){
         video.style.objectFit = 'cover'
-        videoLocal.height = '300'
-        videoLocal.width = '250'
+        video.height = '150'
+        video.width = '150'
       }
 
       producerAudio.current = await producerTransport.produce({
@@ -402,17 +412,18 @@ function App() {
           }
         }else{
           video = document.createElement('video')
+          if(getConstraints() === 'mobile'){
+            video.style.objectFit = 'cover'
+            video.height = '180'
+            video.width = '200'
+          }
+
           video.setAttribute('id', `id-${producerServerId}`)
           video.srcObject = new MediaStream([track])
           video.autoplay = true
           const container = document.querySelector('.paticipants-video')
           container.appendChild(video)
 
-          if(getConstraints() === 'mobile'){
-            video.style.objectFit = 'cover'
-            video.height = '300'
-            video.width = '250'
-          }
         }
 
         console.log('TRACK',track)
