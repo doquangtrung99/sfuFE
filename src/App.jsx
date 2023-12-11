@@ -117,10 +117,10 @@ function App() {
 
   const handleConnectSendTransport = async (producerTransport) => {
     try {
-
+      const isWeb = getConstraints() === 'web'
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: getConstraints() === 'web' ? {
+        video: isWeb ? {
           width: {
             min: 320,
             ideal:250,
@@ -141,7 +141,13 @@ function App() {
 
       const videoLocal = document.querySelector('.local-video')
       videoLocal.srcObject = stream
+      videoLocal.autoPlay = true
       videoLocal.muted = true
+
+      if(isWeb){
+        videoLocal.height = '300px'
+        videoLocal.width = '250px'
+      }
 
       producerAudio.current = await producerTransport.produce({
         track: audioTrack,
@@ -403,8 +409,8 @@ function App() {
 
           if(getConstraints() === 'mobile'){
             video.style.objectFit = 'cover'
-            video.style.height = '100%'
-            video.style.width = '100%'
+            video.height = '300px'
+            video.width = '250px'
           }
         }
 
