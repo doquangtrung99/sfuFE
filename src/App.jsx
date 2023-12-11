@@ -2,9 +2,9 @@ import { useState, useRef,useEffect } from 'react'
 import io from 'socket.io-client'
 import { Device } from 'mediasoup-client'
 
-const socket = io('https://sfuconnect.website')
+// const socket = io('https://sfuconnect.website')
 
-// const socket = io('http://localhost:1300')
+const socket = io('http://localhost:1300')
 
 const room = 'room-1'
 let producerTransport = null;
@@ -105,7 +105,7 @@ function App() {
   const getConstraints = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
     
-    const ios = /iphone|ipod|ipad/.test(userAgent );
+    const ios = /iPhone|ipod|ipad/.test(userAgent);
     const android = userAgent.includes('wv');
 
     if(ios || android){
@@ -132,17 +132,7 @@ function App() {
             max: 450,
           }
         } : {
-          facingMode: "user",
-          width: {
-            min:150,
-            ideal:180,
-            max:200
-          },
-          height: {
-            min:150,
-            ideal:200,
-            max:220
-          }
+          facingMode: "user"
         } 
       })
 
@@ -150,15 +140,23 @@ function App() {
       let videoTrack = stream.getVideoTracks()[0]
 
       const videoLocal = document.querySelector('.local-video')
+      // if(isWeb){
+      //   video.style.objectFit = 'cover'
+      //   video.style.height = '150px'
+      //   video.style.width = '150px'
+      // }
+      
+      if (window.innerWidth <= 767) {
+        // Set maximum width and maximum height for mobile
+        video.style.maxWidth = '100%';
+        video.style.maxHeight = '100%';
+        video.style.width = 'auto';
+        video.style.height = 'auto';
+      }
+      
       videoLocal.srcObject = stream
       videoLocal.autoPlay = true
       videoLocal.muted = true
-
-      if(!isWeb){
-        video.style.objectFit = 'cover'
-        video.height = '150'
-        video.width = '150'
-      }
 
       producerAudio.current = await producerTransport.produce({
         track: audioTrack,
@@ -412,10 +410,15 @@ function App() {
           }
         }else{
           video = document.createElement('video')
-          if(getConstraints() === 'mobile'){
-            video.style.objectFit = 'cover'
-            video.style.height = '180px'
-            video.style.width = '200px'
+          // if(getConstraints() === 'mobile'){
+          //   video.style.objectFit = 'cover'
+          //   video.style.height = '180px'
+          //   video.style.width = '200px'
+          // }
+          if (window.innerWidth >= 767) {
+            // Set maximum width and maximum height for mobile
+            video.style.width = '320px';
+            video.style.height = '280px';
           }
 
           video.setAttribute('id', `id-${producerServerId}`)
