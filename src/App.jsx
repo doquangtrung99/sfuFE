@@ -144,9 +144,10 @@ function App() {
       videoLocal.autoPlay = true
       videoLocal.muted = true
 
-      if(isWeb){
-        videoLocal.height = '300px'
-        videoLocal.width = '250px'
+      if(!isWeb){
+        video.style.objectFit = 'cover'
+        videoLocal.height = '300'
+        videoLocal.width = '250'
       }
 
       producerAudio.current = await producerTransport.produce({
@@ -409,8 +410,8 @@ function App() {
 
           if(getConstraints() === 'mobile'){
             video.style.objectFit = 'cover'
-            video.height = '300px'
-            video.width = '250px'
+            video.height = '300'
+            video.width = '250'
           }
         }
 
