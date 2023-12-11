@@ -102,11 +102,25 @@ function App() {
     }
   };
 
+  const getConstraints = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    
+    const ios = /iphone|ipod|ipad/.test(userAgent );
+    const android = userAgent.includes('wv');
+
+    if(ios || android){
+      return 'mobile'
+    }
+
+    return 'web'
+  }
+
   const handleConnectSendTransport = async (producerTransport) => {
     try {
+
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: {
+        video: getConstraints() === 'web' ? {
           width: {
             min: 320,
             ideal:250,
@@ -117,7 +131,9 @@ function App() {
             ideal:280,
             max: 450,
           }
-        }
+        } : {
+          facingMode: "user" 
+        } 
       })
 
       let audioTrack = stream.getAudioTracks()[0]
@@ -384,6 +400,12 @@ function App() {
           video.autoplay = true
           const container = document.querySelector('.paticipants-video')
           container.appendChild(video)
+
+          if(getConstraints() === 'mobile'){
+            video.style.objectFit = 'cover'
+            video.style.height = '100%'
+            video.style.width = '100%'
+          }
         }
 
         console.log('TRACK',track)
