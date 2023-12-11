@@ -134,14 +134,14 @@ function App() {
         } : {
           facingMode: "user",
           width: {
-            min: 320,
-            ideal:250,
-            max: 640,
+            min:150,
+            ideal:180,
+            max:200
           },
           height: {
-            min: 240,
-            ideal:280,
-            max: 450,
+            min:150,
+            ideal:200,
+            max:220
           }
         } 
       })
@@ -414,8 +414,8 @@ function App() {
           video = document.createElement('video')
           if(getConstraints() === 'mobile'){
             video.style.objectFit = 'cover'
-            video.height = '180'
-            video.width = '200'
+            video.style.height = '180px'
+            video.style.width = '200px'
           }
 
           video.setAttribute('id', `id-${producerServerId}`)
