@@ -2,9 +2,9 @@ import { useState, useRef,useEffect } from 'react'
 import io from 'socket.io-client'
 import { Device } from 'mediasoup-client'
 
-// const socket = io('https://sfuconnect.website')
+const socket = io('https://sfuconnect.website')
 
-const socket = io('http://localhost:1300')
+// const socket = io('http://localhost:1300')
 
 const room = 'room-1'
 let producerTransport = null;
