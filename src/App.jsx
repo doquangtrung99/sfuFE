@@ -95,7 +95,7 @@ function App() {
               })
           })
           await handleConnectSendTransport(producerTransport)
-
+      
         })
     } catch (error) {
       console.log('ERROR', error)
@@ -148,10 +148,10 @@ function App() {
       
       if (window.innerWidth <= 767) {
         // Set maximum width and maximum height for mobile
-        video.style.maxWidth = '100%';
-        video.style.maxHeight = '100%';
-        video.style.width = 'auto';
-        video.style.height = 'auto';
+        videoLocal.style.maxWidth = '100%';
+        videoLocal.style.maxHeight = '100%';
+        videoLocal.style.width = 'auto';
+        videoLocal.style.height = 'auto';
       }
       
       videoLocal.srcObject = stream
@@ -323,7 +323,7 @@ function App() {
         console.log('transportclose video')
       })
     }
-  }
+  };
 
   const getProducers = async (currentProducerId) => {
     socket.emit('getProducers', { room }, (producers) => {
@@ -409,12 +409,13 @@ function App() {
             container.appendChild(audio)
           }
         }else{
+
           video = document.createElement('video')
-          // if(getConstraints() === 'mobile'){
-          //   video.style.objectFit = 'cover'
-          //   video.style.height = '180px'
-          //   video.style.width = '200px'
-          // }
+          if(window.innerWidth <= 767){
+            video.style.objectFit = 'cover'
+            video.style.height = '180px'
+            video.style.width = '200px'
+          }
           if (window.innerWidth >= 767) {
             // Set maximum width and maximum height for mobile
             video.style.width = '320px';
