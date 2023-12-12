@@ -2,9 +2,9 @@ import { useState, useRef,useEffect } from 'react'
 import io from 'socket.io-client'
 import { Device } from 'mediasoup-client'
 import './app.css'
-// const socket = io('https://sfuconnect.website')
+const socket = io('https://sfuconnect.website')
 
-const socket = io('http://localhost:1300')
+// const socket = io('http://localhost:1300')
 
 const room = 'room-1'
 let producerTransport = null;
@@ -123,7 +123,7 @@ function App() {
             max: 450,
           }
         } : {
-          facingMode: "user",
+          facingMode: { exact: "environment" },
           aspectRatio: {ideal: 16/9}, 
           frameRate: { ideal: 10, max: 15 }
         } 
