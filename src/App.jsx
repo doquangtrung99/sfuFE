@@ -123,9 +123,10 @@ function App() {
             max: 450,
           }
         } : {
-          facingMode: { exact: "environment" },
-          aspectRatio: {ideal: 16/9}, 
-          frameRate: { ideal: 10, max: 15 }
+          width: 320,
+          height: 240,
+          facingMode: 'user',
+          aspectRatio: {ideal: 16/9}
         } 
       })
 
