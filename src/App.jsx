@@ -395,7 +395,7 @@ function App() {
             video = document.createElement('video')
             video.setAttribute('id', `id-${producerServerId}`)
             video.srcObject = new MediaStream([track])
-            videoLocal.playsinline = true
+            video.playsinline = true
             video.autoplay = true
             const container = document.querySelector('.paticipants-video')
             container.appendChild(video)
