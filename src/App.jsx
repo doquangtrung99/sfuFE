@@ -137,7 +137,7 @@ function App() {
       videoLocal.srcObject = stream
       videoLocal.playsinline = true
       videoLocal.muted = true
-      videoLocal.control = true
+      videoLocal.controls = true
       videoLocal.autoPlay = true
 
       producerAudio.current = await producerTransport.produce({
