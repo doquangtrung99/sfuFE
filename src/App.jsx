@@ -1,10 +1,10 @@
 import { useState, useRef,useEffect } from 'react'
 import io from 'socket.io-client'
 import { Device } from 'mediasoup-client'
+import './app.css'
+// const socket = io('https://sfuconnect.website')
 
-const socket = io('https://sfuconnect.website')
-
-// const socket = io('http://localhost:1300')
+const socket = io('http://localhost:1300')
 
 const room = 'room-1'
 let producerTransport = null;
@@ -18,10 +18,12 @@ function App() {
   let producerVideo = useRef(null);
 
   useEffect(() => {
+    
     socket.emit('joinRoom', { room }, async (routerRtpCapabilities) => {
       await handleCreateDevice({ routerRtpCapabilities })
       await handleSendTransport(room)
     })
+
   },[])
   const handleCreateDevice = async ({ routerRtpCapabilities }) => {
     try {
@@ -33,6 +35,7 @@ function App() {
   }
 
   socket.on('new-producer', (producerId) => {
+    console.log("NEW PRODUCER",producerId)
     handleCreateReceiveTransport(producerId)
   })
 
@@ -52,25 +55,13 @@ function App() {
           dtlsParameters,
           sctpParameters
         }) => {
-
-          console.log( iceParameters,
-            iceCandidates,
-            dtlsParameters,
-            sctpParameters)
           producerTransport = device.createSendTransport({
             id,
             iceParameters,
             iceCandidates,
             dtlsParameters,
             sctpParameters,
-            iceServers: [
-              { urls: 'stun:stun.l.google.com:19302' },
-              { urls: 'turn:relay1.expressturn.com:3478', username: 'ef2QGP88JE576UZJ7D', credential: 'fu4PRmzfP5GpXdqj' },
-              { urls: 'turn:a.relay.metered.ca:80', username: '1a38a9ab28c6d467023a08fb', credential: 'KJi1ynRRNT2eB9UL' },
-              { urls: 'turn:a.relay.metered.ca:80?transport=tcp', username: '1a38a9ab28c6d467023a08fb', credential: 'KJi1ynRRNT2eB9UL' },
-              { urls: 'turn:a.relay.metered.ca:443', username: '1a38a9ab28c6d467023a08fb', credential: 'KJi1ynRRNT2eB9UL' },
-              { urls: 'turn:a.relay.metered.ca:443?transport=tcp', username: '1a38a9ab28c6d467023a08fb', credential: 'KJi1ynRRNT2eB9UL' }
-            ],
+            iceServers: [],
           })
           producerTransport.on('connectionstatechange', (connectionState) => {
             console.log('Connection state changed', connectionState)
@@ -132,7 +123,9 @@ function App() {
             max: 450,
           }
         } : {
-          facingMode: "user"
+          facingMode: "user",
+          aspectRatio: {ideal: 16/9}, 
+          frameRate: { ideal: 10, max: 15 }
         } 
       })
 
@@ -140,13 +133,6 @@ function App() {
       let videoTrack = stream.getVideoTracks()[0]
 
       const videoLocal = document.querySelector('.local-video')
-      
-      if (window.innerWidth <= 767) {
-        videoLocal.style.maxWidth = '100%';
-        videoLocal.style.maxHeight = '100%';
-        videoLocal.style.width = 'auto';
-        videoLocal.style.height = 'auto';
-      }
       
       videoLocal.srcObject = stream
       videoLocal.autoPlay = true
@@ -321,14 +307,16 @@ function App() {
 
   const getProducers = async (currentProducerId) => {
     socket.emit('getProducers', { room }, (producers) => {
-      producers.forEach(producer => (producer.producerId !== currentProducerId) && handleCreateReceiveTransport(producer.producerId))
+      console.log('pro',producers,'id',currentProducerId)
+      producers.forEach(producer => handleCreateReceiveTransport(producer.producerId))
     })
   }
 
-  const handleCreateReceiveTransport = (producerServerId) => {
+  const handleCreateReceiveTransport = async (producerServerId) => {
     try {
       if (consumingTransports.includes(producerServerId)) return;
       consumingTransports.push(producerServerId);
+      console.log('EMIT')
       socket.emit('createWebRtcTransport',
         {
           room,
@@ -349,15 +337,13 @@ function App() {
             iceCandidates,
             dtlsParameters,
             sctpParameters,
-            iceServers: [{
-              'urls': 'stun:stun1.l.google.com:19302'
-            }],
+            iceServers: [],
           })
           consumerTransport.on('connect', ({ dtlsParameters }, callback, errback) => {
             socket.emit('receive-consumer-connect', { dtlsParameters, consumerTransportId: consumerTransport.id, room, socketId: socket.id })
             callback()
           })
-          handleConnectReceiveTransport(consumerTransport, producerServerId)
+        await handleConnectReceiveTransport(consumerTransport, producerServerId)
         })
     } catch (error) {
       console.log('ERROR', error)
@@ -403,25 +389,14 @@ function App() {
             container.appendChild(audio)
           }
         }else{
-
-          video = document.createElement('video')
-          if(window.innerWidth <= 767){
-            video.style.objectFit = 'cover'
-            video.style.height = '180px'
-            video.style.width = '200px'
+          if(producerVideo.current.id !== producerServerId){
+            video = document.createElement('video')
+            video.setAttribute('id', `id-${producerServerId}`)
+            video.srcObject = new MediaStream([track])
+            video.autoplay = true
+            const container = document.querySelector('.paticipants-video')
+            container.appendChild(video)
           }
-          if (window.innerWidth >= 767) {
-            // Set maximum width and maximum height for mobile
-            video.style.width = '320px';
-            video.style.height = '280px';
-          }
-
-          video.setAttribute('id', `id-${producerServerId}`)
-          video.srcObject = new MediaStream([track])
-          video.autoplay = true
-          const container = document.querySelector('.paticipants-video')
-          container.appendChild(video)
-
         }
 
         console.log('TRACK',track)
@@ -432,6 +407,7 @@ function App() {
     }
   }
   socket.on('producerclose', (producerId) => {
+    console.log('PRODUCER CLOSE',producerId)
     const videoContainer = document.querySelector('.paticipants-video');
     const audioContainer = document.querySelector('.paticipants-audio');
     
