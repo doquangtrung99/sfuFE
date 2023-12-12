@@ -124,9 +124,8 @@ function App() {
           }
         } : {
           width: 320,
-          height: 240,
-          facingMode: 'user',
-          aspectRatio: {ideal: 16/9}
+          height: 280,
+          facingMode: 'user'
         } 
       })
 
@@ -138,6 +137,7 @@ function App() {
       videoLocal.srcObject = stream
       videoLocal.playsinline = true
       videoLocal.muted = true
+      videoLocal.control = true
       videoLocal.autoPlay = true
 
       producerAudio.current = await producerTransport.produce({
