@@ -96,7 +96,7 @@ function App() {
   const getConstraints = () => {
     const userAgent = window.navigator.userAgent.toLowerCase();
     
-    const ios = /iPhone|ipod|ipad/.test(userAgent);
+    const ios = /iphone|ipod|ipad/.test(userAgent);
     const android = userAgent.includes('wv');
 
     if(ios || android){
