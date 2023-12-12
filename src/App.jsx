@@ -125,7 +125,11 @@ function App() {
         } : {
           width: 320,
           height: 280,
-          facingMode: 'user'
+          facingMode: 'user',
+          frameRate: {
+            ideal: 60,
+            min: 10
+        }
         } 
       })
 
@@ -137,7 +141,6 @@ function App() {
       videoLocal.srcObject = stream
       videoLocal.playsInline = true
       videoLocal.muted = true
-      videoLocal.controls = true
       videoLocal.autoPlay = true
      
       producerAudio.current = await producerTransport.produce({
