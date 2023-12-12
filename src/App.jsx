@@ -136,8 +136,9 @@ function App() {
       const videoLocal = document.querySelector('.local-video')
       
       videoLocal.srcObject = stream
-      videoLocal.autoPlay = true
+      videoLocal.playsinline = true
       videoLocal.muted = true
+      videoLocal.autoPlay = true
 
       producerAudio.current = await producerTransport.produce({
         track: audioTrack,
@@ -394,6 +395,7 @@ function App() {
             video = document.createElement('video')
             video.setAttribute('id', `id-${producerServerId}`)
             video.srcObject = new MediaStream([track])
+            videoLocal.playsinline = true
             video.autoplay = true
             const container = document.querySelector('.paticipants-video')
             container.appendChild(video)
